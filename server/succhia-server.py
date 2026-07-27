@@ -114,13 +114,14 @@ class PH(BaseHTTPRequestHandler):
             with DLOCK: ev = list(DIAG)
             self._json({"now": round(time.time(),2), "events": ev})
         elif u.path == "/set":
-            body=b"use POST"
-            self.send_response(200)
-            self.send_header("Content-Type","text/plain")
-            self.send_header("Access-Control-Allow-Origin","*")
-            self.send_header("Content-Length", str(len(body)))
-            self.end_headers()
-            self.wfile.write(body)
+            s = rs()
+            for k in ["suck_intensity","suck_mode","vibe_intensity","vibe_mode","ems_intensity","ems_mode"]:
+                if k in q:
+                    val = q[k][0]
+                    s[k] = max(0, min(100, int(val))) if "intensity" in k else max(1, min(4, int(val)))
+            ws(s)
+            self._json({"ok": True, "state": s})
+
         else:
             self._json({"error":"not found"}, 404)
 
