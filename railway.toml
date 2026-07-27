@@ -1,0 +1,6 @@
+[build]
+builder = "nixpacks"
+provider = "python"
+
+[deploy]
+startCommand = "python3 server/succhia-server.py"
